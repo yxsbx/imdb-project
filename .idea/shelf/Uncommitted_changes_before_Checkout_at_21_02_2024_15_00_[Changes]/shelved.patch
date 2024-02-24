@@ -1,0 +1,140 @@
+Index: src/main/java/com/imdb/model/Actor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.imdb.model;\r\n\r\npublic class Actor {\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/imdb/model/Actor.java b/src/main/java/com/imdb/model/Actor.java
+--- a/src/main/java/com/imdb/model/Actor.java	(revision b5fff35bfa9e0bc54a85c6768e03e2d44eaf8722)
++++ b/src/main/java/com/imdb/model/Actor.java	(date 1708538387064)
+@@ -1,4 +1,8 @@
+ package com.imdb.model;
+ 
+-public class Actor {
++public class Actor extends Person {
++
++    public Actor(String name, String nationality) {
++        super(name, nationality);
++    }
+ }
+Index: src/main/java/com/imdb/model/Director.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.imdb.model;\r\n\r\npublic class Director {\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/imdb/model/Director.java b/src/main/java/com/imdb/model/Director.java
+--- a/src/main/java/com/imdb/model/Director.java	(revision b5fff35bfa9e0bc54a85c6768e03e2d44eaf8722)
++++ b/src/main/java/com/imdb/model/Director.java	(date 1708538390259)
+@@ -1,4 +1,8 @@
+ package com.imdb.model;
+ 
+-public class Director {
++public class Director extends Person {
++
++    public Director(String name, String nationality) {
++        super(name, nationality);
++    }
+ }
+Index: src/main/java/com/imdb/model/Movie.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.imdb.model;\r\n\r\npublic class Movie {\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/imdb/model/Movie.java b/src/main/java/com/imdb/model/Movie.java
+--- a/src/main/java/com/imdb/model/Movie.java	(revision b5fff35bfa9e0bc54a85c6768e03e2d44eaf8722)
++++ b/src/main/java/com/imdb/model/Movie.java	(date 1708538392266)
+@@ -1,4 +1,89 @@
+ package com.imdb.model;
+ 
++import java.util.List;
++
+ public class Movie {
++
++    private int id;
++    private String title;
++    private int releaseDate;
++    private double budget;
++    private String currency;
++    private String description;
++    private final List<Director> directors;
++    private final List<Actor> actors;
++
++    public Movie(
++            String title,
++            int releaseDate,
++            double budget,
++            String currency,
++            String description,
++            List<Actor> actors,
++            List<Director> directors
++    ) {
++        this.title = title;
++        this.releaseDate = releaseDate;
++        this.budget = budget;
++        this.currency = currency;
++        this.description = description;
++        this.actors = actors;
++        this.directors = directors;
++    }
++
++    public int getId() {
++        return id;
++    }
++
++    public void setId(int id) {
++        this.id = id;
++    }
++
++    public String getTitle() {
++        return title;
++    }
++
++    public void setTitle(String title) {
++        this.title = title;
++    }
++
++    public int getReleaseDate() {
++        return releaseDate;
++    }
++
++    public void setReleaseDate(int releaseDate) {
++        this.releaseDate = releaseDate;
++    }
++
++    public double getBudget() {
++        return budget;
++    }
++
++    public void setBudget(double budget) {
++        this.budget = budget;
++    }
++
++    public String getCurrency() {
++        return currency;
++    }
++
++    public void setCurrency(String currency) {
++        this.currency = currency;
++    }
++
++    public String getDescription() {
++        return description;
++    }
++
++    public void setDescription(String description) {
++        this.description = description;
++    }
++
++    public List<Actor> getActors() {
++        return actors;
++    }
++
++    public List<Director> getDirectors() {
++        return directors;
++    }
+ }
