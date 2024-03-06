@@ -1,0 +1,1286 @@
+Index: src/main/java/com/imdb/model/Genre.java
+===================================================================
+diff --git a/src/main/java/com/imdb/model/Genre.java b/src/main/java/com/imdb/model/Genre.java
+deleted file mode 100644
+--- a/src/main/java/com/imdb/model/Genre.java	
++++ /dev/null	
+@@ -1,27 +0,0 @@
+-package com.imdb.model;
+-
+-public enum Genre {
+-  Action,
+-  Adventure,
+-  Animation,
+-  Biography,
+-  Comedy,
+-  Police_officer,
+-  Documentary,
+-  Drama,
+-  Family,
+-  Fantasy,
+-  Film_noir,
+-  History,
+-  Horror,
+-  musical,
+-  Mystery,
+-  Romance,
+-  Science_fiction,
+-  Short_Film,
+-  Sports,
+-  Thriller,
+-  War,
+-  Western,
+-  Others, // Add other genres as needed
+-}
+Index: src/main/java/com/imdb/controller/MovieController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.imdb.controller;\r\n\r\nimport com.imdb.appServices.ActorService;\r\nimport com.imdb.appServices.DirectorService;\r\nimport com.imdb.appServices.MovieService;\r\nimport com.imdb.model.Actor;\r\nimport com.imdb.model.Director;\r\nimport com.imdb.model.Movie;\r\n\r\nimport java.util.*;\r\n\r\npublic class MovieController {\r\n\r\n    private final MovieService movieService;\r\n    private final ActorService actorService;\r\n    private final DirectorService directorService;\r\n\r\n    public MovieController() {\r\n        movieService = new MovieService();\r\n        actorService = new ActorService();\r\n        directorService = new DirectorService();\r\n    }\r\n\r\n    private static final Scanner scanner = new Scanner(System.in);\r\n\r\n    public void registerNewMovie() {\r\n        System.out.print(\"Enter the name of the movie: \");\r\n        String name = scanner.nextLine();\r\n    /*iria chamar uma função de impl que pega o nome e\r\n        verifica pra saber se o nome já existe retornando true ou false.*/\r\n\r\n        Optional<Movie> optionalMovie = movieService.searchMovie(name);\r\n\r\n        if (optionalMovie.isPresent()) {\r\n            System.out.println(\"This movie title already exists.\");\r\n            System.out.print(\"Do you want to edit it? (Yes or No): \");\r\n\r\n      /*posso chamar isInputString pra receber uma string e verificar se não\r\n      posso chamar outra função de ValidationService que recebe pra verificar se esta no intervalo de opções*/\r\n\r\n            String editChoice = scanner.nextLine();\r\n            if (editChoice.equalsIgnoreCase(\"Yes\")) {\r\n                editMovie();\r\n            }\r\n            return;\r\n        }\r\n\r\n        int releaseDate = enterReleaseDate();\r\n        double budget = enterBudget();\r\n        String currency = enterCurrency();\r\n        String description = enterDescription();\r\n        List<Actor> actors = enterActors();\r\n        List<Director> directors = enterDirectors();\r\n\r\n        Movie newMovie = new Movie(\r\n                name,\r\n                releaseDate,\r\n                budget,\r\n                currency,\r\n                description,\r\n                actors,\r\n                directors\r\n        );\r\n        movieService.addMovie(newMovie);\r\n\r\n        System.out.print(\"Do you want to add a new movie? (Yes or No): \");\r\n        if (scanner.nextLine().equalsIgnoreCase(\"Yes\")) {\r\n            registerNewMovie();\r\n        } else {\r\n            System.out.println(\"Returning to main menu...\");\r\n        }\r\n    }\r\n\r\n    public void showListOfMovies() {\r\n        List<Movie> movies = movieService.getAllMovies();\r\n        if (movies.isEmpty()) {\r\n            System.out.println(\"No movies available.\");\r\n            return;\r\n        }\r\n\r\n        System.out.println(\"Movies List:\");\r\n        movies.forEach(movie ->\r\n                System.out.println(\"ID \" + movie.getId() + \": \" + movie.getTitle())\r\n        );\r\n        System.out.println(\r\n                \"Choose a movie ID to show all movie details or enter 0 to return:\"\r\n        );\r\n\r\n        int movieId = safeNextInt();\r\n        if (movieId == 0) return;\r\n\r\n        Optional<Movie> selectedMovie = movieService.searchMovieById(movieId);\r\n        if (selectedMovie.isEmpty()) {\r\n            System.out.println(\"Movie with ID \" + movieId + \" not found.\");\r\n            return;\r\n        }\r\n        printMovieDetails(selectedMovie.get());\r\n    }\r\n\r\n    private void printMovieDetails(Movie selectedMovie) {\r\n        System.out.println(\"Movie title: \" + selectedMovie.getTitle());\r\n        System.out.println(\"Release Date: \" + selectedMovie.getReleaseDate());\r\n        System.out.println(\r\n                \"Budget: \" + selectedMovie.getBudget() + \" \" + selectedMovie.getCurrency()\r\n        );\r\n        System.out.println(\"Description: \" + selectedMovie.getDescription());\r\n        System.out.println(\"List of Actors: \");\r\n        List<Actor> actors = selectedMovie.getActors();\r\n        for (int i = 0; i < actors.size(); i++) {\r\n            System.out.println(\r\n                    (i + 1) +\r\n                            \" - \" +\r\n                            actors.get(i).getName() +\r\n                            \"\\t\" +\r\n                            actors.get(i).getNationality()\r\n            );\r\n        }\r\n        System.out.println(\"List of Directors: \");\r\n        List<Director> directors = selectedMovie.getDirectors();\r\n        for (int i = 0; i < directors.size(); i++) {\r\n            System.out.println(\r\n                    (i + 1) +\r\n                            \" - \" +\r\n                            directors.get(i).getName() +\r\n                            \"\\t\" +\r\n                            directors.get(i).getNationality()\r\n            );\r\n        }\r\n\r\n        System.out.print(\"Do you want to edit this movie? (Yes or No): \");\r\n        String editChoice = scanner.nextLine();\r\n        if (editChoice.equalsIgnoreCase(\"Yes\")) {\r\n            editMovie();\r\n        } else {\r\n            System.out.println(\"Returning to the main menu...\");\r\n        }\r\n    }\r\n\r\n    private double enterBudget() {\r\n        System.out.print(\"Budget: \");\r\n        double budget = scanner.nextDouble();\r\n        scanner.nextLine();\r\n        return budget;\r\n    }\r\n\r\n    private int enterReleaseDate() {\r\n        System.out.print(\r\n                \"Enter Movie Release Date (Year of release that must accept a number with only 4 digits and must not start with 0): \"\r\n        );\r\n        while (true) {\r\n            try {\r\n                int releaseDate = Integer.parseInt(scanner.nextLine());\r\n                if (String.valueOf(releaseDate).length() != 4) {\r\n                    throw new IllegalArgumentException(\r\n                            \"The year of release must contain only 4 digits. Type it again!\"\r\n                    );\r\n                } else if (String.valueOf(releaseDate).startsWith(\"0\")) {\r\n                    throw new IllegalArgumentException(\r\n                            \"Release year must not start with 0. Enter again!\"\r\n                    );\r\n                }\r\n                return releaseDate;\r\n            } catch (NumberFormatException e) {\r\n                System.out.println(\r\n                        \"The year of release must not contain letters. Type it again!\"\r\n                );\r\n            } catch (IllegalArgumentException e) {\r\n                System.out.println(e.getMessage());\r\n            }\r\n        }\r\n    }\r\n\r\n    private String enterCurrency() {\r\n        System.out.println(\r\n                \"Enter the movie Budget. Will it be in Euro, Dollar or Real?\"\r\n        );\r\n        System.out.println(\"1 - Euro\");\r\n        System.out.println(\"2 - Dollar\");\r\n        System.out.println(\"3 - Real\");\r\n        System.out.print(\"Enter your choice: \");\r\n        while (true) {\r\n            try {\r\n                int currencyChoice = Integer.parseInt(scanner.nextLine());\r\n                return switch (currencyChoice) {\r\n                    case 1 -> \"Euro\";\r\n                    case 2 -> \"Dollar\";\r\n                    case 3 -> \"Real\";\r\n                    default -> throw new IllegalArgumentException(\r\n                            \"This currency does not exist. Enter a number from 1 to 3.\"\r\n                    );\r\n                };\r\n            } catch (NumberFormatException e) {\r\n                System.out.println(\"Invalid input. Please enter a number.\");\r\n            } catch (IllegalArgumentException e) {\r\n                System.out.println(e.getMessage());\r\n            }\r\n        }\r\n    }\r\n\r\n    private String enterDescription() {\r\n        System.out.print(\r\n                \"Enter the description of the movie (must not exceed 500 words): \"\r\n        );\r\n        while (true) {\r\n            String description = scanner.nextLine();\r\n            if (description.length() > 500) {\r\n                System.out.println(\r\n                        \"The description cannot exceed 500 words. Type it again!\"\r\n                );\r\n            } else {\r\n                return description;\r\n            }\r\n        }\r\n    }\r\n\r\n    private List<Actor> enterActors() {\r\n        List<Actor> actors = new ArrayList<>();\r\n        int numberOfActors;\r\n        while (true) {\r\n            System.out.print(\r\n                    \"How many actors do you want to add? (It will not be possible to add more than 15 actors): \"\r\n            );\r\n            try {\r\n                numberOfActors = Integer.parseInt(scanner.nextLine());\r\n                if (numberOfActors < 1 || numberOfActors > 15) {\r\n                    throw new IllegalArgumentException(\"You can enter up to 15 actors.\");\r\n                }\r\n                break;\r\n            } catch (NumberFormatException e) {\r\n                System.out.println(\"Invalid input. Please enter a number.\");\r\n            } catch (IllegalArgumentException e) {\r\n                System.out.println(e.getMessage());\r\n            }\r\n        }\r\n\r\n        for (int i = 1; i <= numberOfActors; i++) {\r\n            System.out.print(\"Enter the name of actor \" + i + \": \");\r\n            String actorName = scanner.nextLine();\r\n            Optional<Actor> existingActor = actorService.searchActor(actorName);\r\n\r\n            String nationality;\r\n            if (existingActor.isPresent()) {\r\n                System.out.println(\"Actor already exists.\");\r\n            } else {\r\n                System.out.print(\"Add nationality: \");\r\n                nationality = scanner.nextLine();\r\n                Actor newActor = new Actor(actorName, nationality);\r\n                actorService.addActor(newActor);\r\n                actors.add(newActor);\r\n            }\r\n        }\r\n        return actors;\r\n    }\r\n\r\n    private List<Director> enterDirectors() {\r\n        List<Director> directors = new ArrayList<>();\r\n        int numberOfDirectors;\r\n        while (true) {\r\n            System.out.print(\r\n                    \"How many directors do you want to add? (It will not be possible to add more than 10 directors): \"\r\n            );\r\n            try {\r\n                numberOfDirectors = Integer.parseInt(scanner.nextLine());\r\n                if (numberOfDirectors < 1 || numberOfDirectors > 10) {\r\n                    throw new IllegalArgumentException(\r\n                            \"You can enter up to 10 directors.\"\r\n                    );\r\n                }\r\n                break;\r\n            } catch (NumberFormatException e) {\r\n                System.out.println(\"Invalid input. Please enter a number.\");\r\n            } catch (IllegalArgumentException e) {\r\n                System.out.println(e.getMessage());\r\n            }\r\n        }\r\n\r\n        for (int i = 1; i <= numberOfDirectors; i++) {\r\n            System.out.print(\"Enter the name of director \" + i + \": \");\r\n            String directorName = scanner.nextLine();\r\n            Optional<Director> existingDirector = directorService.searchDirector(\r\n                    directorName\r\n            );\r\n            String nationality;\r\n            if (existingDirector.isPresent()) {\r\n                System.out.println(\"Director already exists.\");\r\n            } else {\r\n                System.out.print(\"Add nationality: \");\r\n                nationality = scanner.nextLine();\r\n                Director newDiretor = new Director(directorName, nationality);\r\n                directorService.addDirector(newDiretor);\r\n                directors.add(newDiretor);\r\n            }\r\n        }\r\n        return directors;\r\n    }\r\n\r\n    public void editMovie() {\r\n        System.out.println(\"Which movie do you want to edit?\");\r\n        int movieIdToEdit = scanner.nextInt();\r\n        scanner.nextLine();\r\n\r\n        Optional<Movie> movieToEdit = movieService.searchMovieById(movieIdToEdit);\r\n        if (movieToEdit.isEmpty()) {\r\n            System.out.println(\"Editing movie: \" + movieToEdit.get().getTitle());\r\n            System.out.println(\"What would you like to edit?\");\r\n            System.out.println(\"1. Title\");\r\n            System.out.println(\"2. Release Date\");\r\n            System.out.println(\"3. Budget\");\r\n            System.out.println(\"4. Description\");\r\n            System.out.println(\"5. Actors\");\r\n            System.out.println(\"6. Directors\");\r\n            System.out.println(\"7. Cancel\");\r\n            System.out.print(\"Enter your choice: \");\r\n\r\n            int choice = safeNextInt();\r\n            switch (choice) {\r\n                case 1:\r\n                    editTitle(movieToEdit.get());\r\n                    break;\r\n                case 2:\r\n                    editReleaseDate(movieToEdit.get());\r\n                    break;\r\n                case 3:\r\n                    editBudget(movieToEdit.get());\r\n                    break;\r\n                case 4:\r\n                    editDescription(movieToEdit.get());\r\n                    break;\r\n                case 5:\r\n                    //actorService.updateActor(movieToEdit.get().getActors());\r\n                    break;\r\n                case 6:\r\n                    //directorService.updateDirector(movieToEdit.get().getActors());\r\n                    break;\r\n                case 7:\r\n                    System.out.println(\"Cancelling movie edit.\");\r\n                    break;\r\n                default:\r\n                    System.out.println(\"Invalid choice.\");\r\n                    break;\r\n            }\r\n        } else {\r\n            System.out.println(\"Movie with ID \" + movieIdToEdit + \" not found.\");\r\n        }\r\n    }\r\n\r\n    public void editTitle(Movie movie) {\r\n        System.out.print(\"Enter the new title: \");\r\n        String newTitle = scanner.nextLine();\r\n        movie.setTitle(newTitle);\r\n        System.out.println(\"Title updated successfully!\");\r\n    }\r\n\r\n    public void editReleaseDate(Movie movie) {\r\n        System.out.print(\"Enter the new release date: \");\r\n        int newReleaseDate = scanner.nextInt();\r\n        scanner.nextLine();\r\n        movie.setReleaseDate(newReleaseDate);\r\n        System.out.println(\"Release date updated successfully!\");\r\n    }\r\n\r\n    public void editBudget(Movie movie) {\r\n        System.out.print(\"Enter the new budget: \");\r\n        double newBudget = scanner.nextDouble();\r\n        scanner.nextLine();\r\n        movie.setBudget(newBudget);\r\n        System.out.println(\"Budget updated successfully!\");\r\n    }\r\n\r\n    public void editDescription(Movie movie) {\r\n        System.out.print(\"Enter the new description: \");\r\n        String newDescription = scanner.nextLine();\r\n        movie.setDescription(newDescription);\r\n        System.out.println(\"Description updated successfully!\");\r\n    }\r\n\r\n    public void deleteMovie() {\r\n        List<Movie> movies = movieService.getAllMovies();\r\n        if (movies.isEmpty()) {\r\n            System.out.println(\"No movies available for deletion.\");\r\n            return;\r\n        }\r\n\r\n        System.out.println(\"Movie List:\");\r\n        for (Movie movie : movies) {\r\n            System.out.println(\"ID \" + movie.getId() + \": \" + movie.getTitle());\r\n        }\r\n\r\n        System.out.print(\"Enter the ID of the movie you want to delete: \");\r\n        int movieIdToDelete = scanner.nextInt();\r\n        scanner.nextLine();\r\n\r\n        movieService.removeMovie(\r\n                movieService.searchMovieById(movieIdToDelete).get()\r\n        );\r\n    }\r\n\r\n    private int safeNextInt() {\r\n        while (true) {\r\n            try {\r\n                return scanner.nextInt();\r\n            } catch (InputMismatchException e) {\r\n                scanner.nextLine();\r\n                System.out.println(\"Invalid input. Please enter a valid number.\");\r\n            }\r\n        }\r\n    }\r\n\r\n    public void searchMovie() {\r\n        System.out.println(\"Menu - Search\");\r\n        System.out.println(\r\n                \"Do you want to search for a Movie Title, Actor, Director or Release Date?\"\r\n        );\r\n        System.out.println(\"1 - Movie Title\");\r\n        System.out.println(\"2 - Actor\");\r\n        System.out.println(\"3 - Director\");\r\n        System.out.println(\"4 - Release Date\");\r\n        System.out.print(\"Enter your choice: \");\r\n        int searchChoice = scanner.nextInt();\r\n        scanner.nextLine();\r\n\r\n        switch (searchChoice) {\r\n            case 1:\r\n                searchByTitle();\r\n                break;\r\n            case 2:\r\n                searchByActor();\r\n                break;\r\n            case 3:\r\n                searchByDirector();\r\n                break;\r\n            case 4:\r\n                searchByReleaseDate();\r\n                break;\r\n            default:\r\n                System.out.println(\"Invalid choice. Returning to main menu...\");\r\n        }\r\n    }\r\n\r\n    private void searchByTitle() {\r\n        System.out.print(\"What is the title of the movie you want to search for? \");\r\n        String title = scanner.nextLine();\r\n        ArrayList<Movie> foundMovies = new ArrayList<>();\r\n        for (Movie movie : movieService.getAllMovies()) {\r\n            if (movie.getTitle().equalsIgnoreCase(title)) {\r\n                foundMovies.add(movie);\r\n            }\r\n        }\r\n        displayMovieTitleSearchResult(foundMovies);\r\n    }\r\n\r\n    private void displayMovieTitleSearchResult(List<Movie> movies) {\r\n        if (movies.isEmpty()) {\r\n            System.out.println(\"No movies found.\");\r\n        } else {\r\n            for (Movie movie : movies) {\r\n                System.out.println(\"Movie title: \" + movie.getTitle());\r\n                System.out.println(\"Release Date: \" + movie.getReleaseDate());\r\n                System.out.println(\r\n                        \"Budget: \" + movie.getBudget() + \" \" + movie.getCurrency()\r\n                );\r\n                System.out.println(\"Description: \" + movie.getDescription());\r\n                System.out.println(\"List of Actors:\");\r\n                for (Actor actor : movie.getActors()) {\r\n                    System.out.println(actor.getName());\r\n                }\r\n                System.out.println(\"List of Directors:\");\r\n                for (Director director : movie.getDirectors()) {\r\n                    System.out.println(director.getName());\r\n                }\r\n                System.out.println(\r\n                        \"Do you want to look for another movie? (Yes or No): \"\r\n                );\r\n                String choice = scanner.nextLine();\r\n                if (!choice.equalsIgnoreCase(\"Yes\")) {\r\n                    System.out.println(\"Returning to the main menu...\");\r\n                    break;\r\n                }\r\n            }\r\n        }\r\n    }\r\n\r\n    private void searchByActor() {\r\n        System.out.print(\"Which actor do you want to look for? \");\r\n        String actorName = scanner.nextLine();\r\n        List<Movie> foundMovies = new ArrayList<>();\r\n        for (Movie movie : movieService.getAllMovies()) {\r\n            for (Actor actor : movie.getActors()) {\r\n                if (actor.getName().equalsIgnoreCase(actorName)) {\r\n                    foundMovies.add(movie);\r\n                    break;\r\n                }\r\n            }\r\n        }\r\n        displayActorSearchResult(foundMovies);\r\n    }\r\n\r\n    public void searchByDirector() {\r\n        System.out.print(\"Which director do you want to look for? \");\r\n        String directorName = scanner.nextLine();\r\n        Optional<Director> director = directorService.searchDirector(directorName);\r\n        if (director.isEmpty()) {\r\n            System.out.println(\"Director not found.\");\r\n            return;\r\n        }\r\n        searchByDirector(movieService.getAllMovies(), director.get());\r\n    }\r\n\r\n    private void searchByDirector(List<Movie> allMovies, Director director) {\r\n        List<Movie> foundMovies = new ArrayList<>();\r\n        for (Movie movie : allMovies) {\r\n            for (Director dir : movie.getDirectors()) {\r\n                if (dir.getName().equalsIgnoreCase(director.getName())) {\r\n                    foundMovies.add(movie);\r\n                    break;\r\n                }\r\n            }\r\n        }\r\n        displayDirectorSearchResult(foundMovies);\r\n    }\r\n\r\n    private void searchByReleaseDate() {\r\n        System.out.print(\"What release year are you looking for? \");\r\n        String releaseDate = scanner.nextLine();\r\n        List<Movie> foundMovies = new ArrayList<>();\r\n        for (Movie movie : movieService.getAllMovies()) {\r\n            if (String.valueOf(movie.getReleaseDate()).equals(releaseDate)) {\r\n                foundMovies.add(movie);\r\n            }\r\n        }\r\n        displayReleaseDateSearchResult(foundMovies);\r\n    }\r\n\r\n    private void displayActorSearchResult(List<Movie> movies) {\r\n        if (movies.isEmpty()) {\r\n            System.out.println(\"No movies found for this actor.\");\r\n        } else {\r\n            for (Movie movie : movies) {\r\n                System.out.println(\r\n                        \"Movie title: \" +\r\n                                movie.getTitle() +\r\n                                \"\\tRelease Date: \" +\r\n                                movie.getReleaseDate()\r\n                );\r\n            }\r\n            System.out.println(\r\n                    \"Do you want to see more details about any movie on the list? (Yes or No): \"\r\n            );\r\n            String choice = scanner.nextLine();\r\n            if (choice.equalsIgnoreCase(\"Yes\")) {\r\n                System.out.print(\"Enter the movie ID: \");\r\n                int movieId = scanner.nextInt();\r\n                scanner.nextLine();\r\n                ArrayList<Movie> aux = new ArrayList<>();\r\n                aux.add(movieService.searchMovieById(movieId).get());\r\n                displayMovieTitleSearchResult(aux);\r\n            } else {\r\n                System.out.println(\"Returning to the main menu...\");\r\n            }\r\n        }\r\n    }\r\n\r\n    private void displayDirectorSearchResult(List<Movie> movies) {\r\n        if (movies.isEmpty()) {\r\n            System.out.println(\"No movies found for this director.\");\r\n        } else {\r\n            for (Movie movie : movies) {\r\n                System.out.println(\r\n                        \"Movie title: \" +\r\n                                movie.getTitle() +\r\n                                \"\\tRelease Date: \" +\r\n                                movie.getReleaseDate()\r\n                );\r\n            }\r\n            System.out.println(\r\n                    \"Do you want to see more details about any movie on the list? (Yes or No): \"\r\n            );\r\n            String choice = scanner.nextLine();\r\n            if (choice.equalsIgnoreCase(\"Yes\")) {\r\n                System.out.print(\"Enter the movie ID: \");\r\n                int movieId = scanner.nextInt();\r\n                scanner.nextLine();\r\n                Optional<Movie> selectedMovie = movieService.searchMovieById(movieId);\r\n                if (selectedMovie.isPresent()) {\r\n                    printMovieDetails(selectedMovie.get());\r\n                } else {\r\n                    System.out.println(\"Movie with ID \" + movieId + \" not found.\");\r\n                }\r\n            } else {\r\n                System.out.println(\"Returning to the main menu...\");\r\n            }\r\n        }\r\n    }\r\n\r\n    private void displayReleaseDateSearchResult(List<Movie> movies) {\r\n        if (movies.isEmpty()) {\r\n            System.out.println(\"No movies found for this release year.\");\r\n        } else {\r\n            for (Movie movie : movies) {\r\n                System.out.println(\"Movie title: \" + movie.getTitle());\r\n            }\r\n            System.out.println(\r\n                    \"Do you want to see more details about any movie on the list? (Yes or No): \"\r\n            );\r\n            String choice = scanner.nextLine();\r\n            if (choice.equalsIgnoreCase(\"Yes\")) {\r\n                System.out.print(\"Enter the movie ID: \");\r\n                int movieId = scanner.nextInt();\r\n                scanner.nextLine();\r\n                ArrayList<Movie> aux = new ArrayList<>();\r\n                aux.add(movieService.searchMovieById(movieId).get());\r\n                displayMovieTitleSearchResult(aux);\r\n            } else {\r\n                System.out.println(\"Returning to the main menu...\");\r\n            }\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/imdb/controller/MovieController.java b/src/main/java/com/imdb/controller/MovieController.java
+--- a/src/main/java/com/imdb/controller/MovieController.java	
++++ b/src/main/java/com/imdb/controller/MovieController.java	
+@@ -6,613 +6,607 @@
+ import com.imdb.model.Actor;
+ import com.imdb.model.Director;
+ import com.imdb.model.Movie;
+-
+ import java.util.*;
+ 
+ public class MovieController {
+ 
+-    private final MovieService movieService;
+-    private final ActorService actorService;
+-    private final DirectorService directorService;
++  //Verificar
++  private final MovieService movieService;
++  private final ActorService actorService;
++  private final DirectorService directorService;
+ 
+-    public MovieController() {
+-        movieService = new MovieService();
+-        actorService = new ActorService();
+-        directorService = new DirectorService();
+-    }
++  public MovieController() {
++    movieService = new MovieService();
++    actorService = new ActorService();
++    directorService = new DirectorService();
++  }
+ 
+-    private static final Scanner scanner = new Scanner(System.in);
++  private static final Scanner scanner = new Scanner(System.in);
+ 
+-    public void registerNewMovie() {
+-        System.out.print("Enter the name of the movie: ");
+-        String name = scanner.nextLine();
+-    /*iria chamar uma função de impl que pega o nome e
+-        verifica pra saber se o nome já existe retornando true ou false.*/
++  public void registerNewMovie() {
++    System.out.print("Enter the name of the movie: ");
++    String name = scanner.nextLine();
+ 
+-        Optional<Movie> optionalMovie = movieService.searchMovie(name);
++    Optional<Movie> optionalMovie = movieService.searchMovie(name);
+ 
+-        if (optionalMovie.isPresent()) {
+-            System.out.println("This movie title already exists.");
+-            System.out.print("Do you want to edit it? (Yes or No): ");
+-
+-      /*posso chamar isInputString pra receber uma string e verificar se não
+-      posso chamar outra função de ValidationService que recebe pra verificar se esta no intervalo de opções*/
+-
+-            String editChoice = scanner.nextLine();
+-            if (editChoice.equalsIgnoreCase("Yes")) {
+-                editMovie();
+-            }
+-            return;
+-        }
++    if (optionalMovie.isPresent()) {
++      System.out.println("This movie title already exists.");
++      System.out.print("Do you want to edit it? (Yes or No): ");
++      String editChoice = scanner.nextLine();
++      if (editChoice.equalsIgnoreCase("Yes")) {
++        editMovie();
++      }
++      return;
++    }
+ 
+-        int releaseDate = enterReleaseDate();
+-        double budget = enterBudget();
+-        String currency = enterCurrency();
+-        String description = enterDescription();
+-        List<Actor> actors = enterActors();
+-        List<Director> directors = enterDirectors();
++    int releaseDate = enterReleaseDate();
++    double budget = enterBudget();
++    String currency = enterCurrency();
++    String description = enterDescription();
++    List<Actor> actors = enterActors();
++    List<Director> directors = enterDirectors();
+ 
+-        Movie newMovie = new Movie(
+-                name,
+-                releaseDate,
+-                budget,
+-                currency,
+-                description,
+-                actors,
+-                directors
+-        );
+-        movieService.addMovie(newMovie);
++    Movie newMovie = new Movie(
++      name,
++      releaseDate,
++      budget,
++      currency,
++      description,
++      actors,
++      directors
++    );
++    movieService.addMovie(newMovie);
+ 
+-        System.out.print("Do you want to add a new movie? (Yes or No): ");
+-        if (scanner.nextLine().equalsIgnoreCase("Yes")) {
+-            registerNewMovie();
+-        } else {
+-            System.out.println("Returning to main menu...");
+-        }
+-    }
++    System.out.print("Do you want to add a new movie? (Yes or No): ");
++    if (scanner.nextLine().equalsIgnoreCase("Yes")) {
++      registerNewMovie();
++    } else {
++      System.out.println("Returning to main menu...");
++    }
++  }
+ 
+-    public void showListOfMovies() {
+-        List<Movie> movies = movieService.getAllMovies();
+-        if (movies.isEmpty()) {
+-            System.out.println("No movies available.");
+-            return;
+-        }
++  public void showListOfMovies() {
++    List<Movie> movies = movieService.getAllMovies();
++    if (movies.isEmpty()) {
++      System.out.println("No movies available.");
++      return;
++    }
+ 
+-        System.out.println("Movies List:");
+-        movies.forEach(movie ->
+-                System.out.println("ID " + movie.getId() + ": " + movie.getTitle())
+-        );
+-        System.out.println(
+-                "Choose a movie ID to show all movie details or enter 0 to return:"
+-        );
++    System.out.println("Movies List:");
++    movies.forEach(movie ->
++      System.out.println("ID " + movie.getId() + ": " + movie.getTitle())
++    );
++    System.out.println(
++      "Choose a movie ID to show all movie details or enter 0 to return:"
++    );
+ 
+-        int movieId = safeNextInt();
+-        if (movieId == 0) return;
++    int movieId = safeNextInt();
++    if (movieId == 0) return;
+ 
+-        Optional<Movie> selectedMovie = movieService.searchMovieById(movieId);
+-        if (selectedMovie.isEmpty()) {
+-            System.out.println("Movie with ID " + movieId + " not found.");
+-            return;
+-        }
+-        printMovieDetails(selectedMovie.get());
+-    }
++    Optional<Movie> selectedMovie = movieService.searchMovieById(movieId);
++    if (selectedMovie.isEmpty()) {
++      System.out.println("Movie with ID " + movieId + " not found.");
++      return;
++    }
++    printMovieDetails(selectedMovie.get());
++  }
+ 
+-    private void printMovieDetails(Movie selectedMovie) {
+-        System.out.println("Movie title: " + selectedMovie.getTitle());
+-        System.out.println("Release Date: " + selectedMovie.getReleaseDate());
+-        System.out.println(
+-                "Budget: " + selectedMovie.getBudget() + " " + selectedMovie.getCurrency()
+-        );
+-        System.out.println("Description: " + selectedMovie.getDescription());
+-        System.out.println("List of Actors: ");
+-        List<Actor> actors = selectedMovie.getActors();
+-        for (int i = 0; i < actors.size(); i++) {
+-            System.out.println(
+-                    (i + 1) +
+-                            " - " +
+-                            actors.get(i).getName() +
+-                            "\t" +
+-                            actors.get(i).getNationality()
+-            );
+-        }
+-        System.out.println("List of Directors: ");
+-        List<Director> directors = selectedMovie.getDirectors();
+-        for (int i = 0; i < directors.size(); i++) {
+-            System.out.println(
+-                    (i + 1) +
+-                            " - " +
+-                            directors.get(i).getName() +
+-                            "\t" +
+-                            directors.get(i).getNationality()
+-            );
+-        }
++  private void printMovieDetails(Movie selectedMovie) {
++    System.out.println("Movie title: " + selectedMovie.getTitle());
++    System.out.println("Release Date: " + selectedMovie.getReleaseDate());
++    System.out.println(
++      "Budget: " + selectedMovie.getBudget() + " " + selectedMovie.getCurrency()
++    );
++    System.out.println("Description: " + selectedMovie.getDescription());
++    System.out.println("List of Actors: ");
++    List<Actor> actors = selectedMovie.getActors();
++    for (int i = 0; i < actors.size(); i++) {
++      System.out.println(
++        (i + 1) +
++        " - " +
++        actors.get(i).getName() +
++        "\t" +
++        actors.get(i).getNationality()
++      );
++    }
++    System.out.println("List of Directors: ");
++    List<Director> directors = selectedMovie.getDirectors();
++    for (int i = 0; i < directors.size(); i++) {
++      System.out.println(
++        (i + 1) +
++        " - " +
++        directors.get(i).getName() +
++        "\t" +
++        directors.get(i).getNationality()
++      );
++    }
+ 
+-        System.out.print("Do you want to edit this movie? (Yes or No): ");
+-        String editChoice = scanner.nextLine();
+-        if (editChoice.equalsIgnoreCase("Yes")) {
+-            editMovie();
+-        } else {
+-            System.out.println("Returning to the main menu...");
+-        }
+-    }
++    System.out.print("Do you want to edit this movie? (Yes or No): ");
++    String editChoice = scanner.nextLine();
++    if (editChoice.equalsIgnoreCase("Yes")) {
++      editMovie();
++    } else {
++      System.out.println("Returning to the main menu...");
++    }
++  }
+ 
+-    private double enterBudget() {
+-        System.out.print("Budget: ");
+-        double budget = scanner.nextDouble();
+-        scanner.nextLine();
+-        return budget;
+-    }
++  private double enterBudget() {
++    System.out.print("Budget: ");
++    double budget = scanner.nextDouble();
++    scanner.nextLine();
++    return budget;
++  }
+ 
+-    private int enterReleaseDate() {
+-        System.out.print(
+-                "Enter Movie Release Date (Year of release that must accept a number with only 4 digits and must not start with 0): "
+-        );
+-        while (true) {
+-            try {
+-                int releaseDate = Integer.parseInt(scanner.nextLine());
+-                if (String.valueOf(releaseDate).length() != 4) {
+-                    throw new IllegalArgumentException(
+-                            "The year of release must contain only 4 digits. Type it again!"
+-                    );
+-                } else if (String.valueOf(releaseDate).startsWith("0")) {
+-                    throw new IllegalArgumentException(
+-                            "Release year must not start with 0. Enter again!"
+-                    );
+-                }
+-                return releaseDate;
+-            } catch (NumberFormatException e) {
+-                System.out.println(
+-                        "The year of release must not contain letters. Type it again!"
+-                );
+-            } catch (IllegalArgumentException e) {
+-                System.out.println(e.getMessage());
+-            }
+-        }
+-    }
++  private int enterReleaseDate() {
++    System.out.print(
++      "Enter Movie Release Date (Year of release that must accept a number with only 4 digits and must not start with 0): "
++    );
++    while (true) {
++      try {
++        int releaseDate = Integer.parseInt(scanner.nextLine());
++        if (String.valueOf(releaseDate).length() != 4) {
++          throw new IllegalArgumentException(
++            "The year of release must contain only 4 digits. Type it again!"
++          );
++        } else if (String.valueOf(releaseDate).startsWith("0")) {
++          throw new IllegalArgumentException(
++            "Release year must not start with 0. Enter again!"
++          );
++        }
++        return releaseDate;
++      } catch (NumberFormatException e) {
++        System.out.println(
++          "The year of release must not contain letters. Type it again!"
++        );
++      } catch (IllegalArgumentException e) {
++        System.out.println(e.getMessage());
++      }
++    }
++  }
+ 
+-    private String enterCurrency() {
+-        System.out.println(
+-                "Enter the movie Budget. Will it be in Euro, Dollar or Real?"
+-        );
+-        System.out.println("1 - Euro");
+-        System.out.println("2 - Dollar");
+-        System.out.println("3 - Real");
+-        System.out.print("Enter your choice: ");
+-        while (true) {
+-            try {
+-                int currencyChoice = Integer.parseInt(scanner.nextLine());
+-                return switch (currencyChoice) {
+-                    case 1 -> "Euro";
+-                    case 2 -> "Dollar";
+-                    case 3 -> "Real";
+-                    default -> throw new IllegalArgumentException(
+-                            "This currency does not exist. Enter a number from 1 to 3."
+-                    );
+-                };
+-            } catch (NumberFormatException e) {
+-                System.out.println("Invalid input. Please enter a number.");
+-            } catch (IllegalArgumentException e) {
+-                System.out.println(e.getMessage());
+-            }
+-        }
+-    }
++  private String enterCurrency() {
++    System.out.println(
++      "Enter the movie Budget. Will it be in Euro, Dollar or Real?"
++    );
++    System.out.println("1 - Euro");
++    System.out.println("2 - Dollar");
++    System.out.println("3 - Real");
++    System.out.print("Enter your choice: ");
++    while (true) {
++      try {
++        int currencyChoice = Integer.parseInt(scanner.nextLine());
++        return switch (currencyChoice) {
++          case 1 -> "Euro";
++          case 2 -> "Dollar";
++          case 3 -> "Real";
++          default -> throw new IllegalArgumentException(
++            "This currency does not exist. Enter a number from 1 to 3."
++          );
++        };
++      } catch (NumberFormatException e) {
++        System.out.println("Invalid input. Please enter a number.");
++      } catch (IllegalArgumentException e) {
++        System.out.println(e.getMessage());
++      }
++    }
++  }
+ 
+-    private String enterDescription() {
+-        System.out.print(
+-                "Enter the description of the movie (must not exceed 500 words): "
+-        );
+-        while (true) {
+-            String description = scanner.nextLine();
+-            if (description.length() > 500) {
+-                System.out.println(
+-                        "The description cannot exceed 500 words. Type it again!"
+-                );
+-            } else {
+-                return description;
+-            }
+-        }
+-    }
++  private String enterDescription() {
++    System.out.print(
++      "Enter the description of the movie (must not exceed 500 words): "
++    );
++    while (true) {
++      String description = scanner.nextLine();
++      if (description.length() > 500) {
++        System.out.println(
++          "The description cannot exceed 500 words. Type it again!"
++        );
++      } else {
++        return description;
++      }
++    }
++  }
+ 
+-    private List<Actor> enterActors() {
+-        List<Actor> actors = new ArrayList<>();
+-        int numberOfActors;
+-        while (true) {
+-            System.out.print(
+-                    "How many actors do you want to add? (It will not be possible to add more than 15 actors): "
+-            );
+-            try {
+-                numberOfActors = Integer.parseInt(scanner.nextLine());
+-                if (numberOfActors < 1 || numberOfActors > 15) {
+-                    throw new IllegalArgumentException("You can enter up to 15 actors.");
+-                }
+-                break;
+-            } catch (NumberFormatException e) {
+-                System.out.println("Invalid input. Please enter a number.");
+-            } catch (IllegalArgumentException e) {
+-                System.out.println(e.getMessage());
+-            }
+-        }
++  private List<Actor> enterActors() {
++    List<Actor> actors = new ArrayList<>();
++    int numberOfActors;
++    while (true) {
++      System.out.print(
++        "How many actors do you want to add? (It will not be possible to add more than 15 actors): "
++      );
++      try {
++        numberOfActors = Integer.parseInt(scanner.nextLine());
++        if (numberOfActors < 1 || numberOfActors > 15) {
++          throw new IllegalArgumentException("You can enter up to 15 actors.");
++        }
++        break;
++      } catch (NumberFormatException e) {
++        System.out.println("Invalid input. Please enter a number.");
++      } catch (IllegalArgumentException e) {
++        System.out.println(e.getMessage());
++      }
++    }
+ 
+-        for (int i = 1; i <= numberOfActors; i++) {
+-            System.out.print("Enter the name of actor " + i + ": ");
+-            String actorName = scanner.nextLine();
+-            Optional<Actor> existingActor = actorService.searchActor(actorName);
++    for (int i = 1; i <= numberOfActors; i++) {
++      System.out.print("Enter the name of actor " + i + ": ");
++      String actorName = scanner.nextLine();
++      Optional<Actor> existingActor = actorService.searchActor(actorName);
+ 
+-            String nationality;
+-            if (existingActor.isPresent()) {
+-                System.out.println("Actor already exists.");
+-            } else {
+-                System.out.print("Add nationality: ");
+-                nationality = scanner.nextLine();
+-                Actor newActor = new Actor(actorName, nationality);
+-                actorService.addActor(newActor);
+-                actors.add(newActor);
+-            }
+-        }
+-        return actors;
+-    }
++      String nationality;
++      if (existingActor.isPresent()) {
++        System.out.println("Actor already exists.");
++      } else {
++        System.out.print("Add nationality: ");
++        nationality = scanner.nextLine();
++        Actor newActor = new Actor(actorName, nationality);
++        actorService.addActor(newActor);
++        actors.add(newActor);
++      }
++    }
++    return actors;
++  }
+ 
+-    private List<Director> enterDirectors() {
+-        List<Director> directors = new ArrayList<>();
+-        int numberOfDirectors;
+-        while (true) {
+-            System.out.print(
+-                    "How many directors do you want to add? (It will not be possible to add more than 10 directors): "
+-            );
+-            try {
+-                numberOfDirectors = Integer.parseInt(scanner.nextLine());
+-                if (numberOfDirectors < 1 || numberOfDirectors > 10) {
+-                    throw new IllegalArgumentException(
+-                            "You can enter up to 10 directors."
+-                    );
+-                }
+-                break;
+-            } catch (NumberFormatException e) {
+-                System.out.println("Invalid input. Please enter a number.");
+-            } catch (IllegalArgumentException e) {
+-                System.out.println(e.getMessage());
+-            }
+-        }
++  private List<Director> enterDirectors() {
++    List<Director> directors = new ArrayList<>();
++    int numberOfDirectors;
++    while (true) {
++      System.out.print(
++        "How many directors do you want to add? (It will not be possible to add more than 10 directors): "
++      );
++      try {
++        numberOfDirectors = Integer.parseInt(scanner.nextLine());
++        if (numberOfDirectors < 1 || numberOfDirectors > 10) {
++          throw new IllegalArgumentException(
++            "You can enter up to 10 directors."
++          );
++        }
++        break;
++      } catch (NumberFormatException e) {
++        System.out.println("Invalid input. Please enter a number.");
++      } catch (IllegalArgumentException e) {
++        System.out.println(e.getMessage());
++      }
++    }
+ 
+-        for (int i = 1; i <= numberOfDirectors; i++) {
+-            System.out.print("Enter the name of director " + i + ": ");
+-            String directorName = scanner.nextLine();
+-            Optional<Director> existingDirector = directorService.searchDirector(
+-                    directorName
+-            );
+-            String nationality;
+-            if (existingDirector.isPresent()) {
+-                System.out.println("Director already exists.");
+-            } else {
+-                System.out.print("Add nationality: ");
+-                nationality = scanner.nextLine();
+-                Director newDiretor = new Director(directorName, nationality);
+-                directorService.addDirector(newDiretor);
+-                directors.add(newDiretor);
+-            }
+-        }
+-        return directors;
+-    }
++    for (int i = 1; i <= numberOfDirectors; i++) {
++      System.out.print("Enter the name of director " + i + ": ");
++      String directorName = scanner.nextLine();
++      Optional<Director> existingDirector = directorService.searchDirector(
++        directorName
++      );
++      String nationality;
++      if (existingDirector.isPresent()) {
++        System.out.println("Director already exists.");
++      } else {
++        System.out.print("Add nationality: ");
++        nationality = scanner.nextLine();
++        Director newDiretor = new Director(directorName, nationality);
++        directorService.addDirector(newDiretor);
++        directors.add(newDiretor);
++      }
++    }
++    return directors;
++  }
+ 
+-    public void editMovie() {
+-        System.out.println("Which movie do you want to edit?");
+-        int movieIdToEdit = scanner.nextInt();
+-        scanner.nextLine();
++  public void editMovie() {
++    System.out.println("Which movie do you want to edit?");
++    int movieIdToEdit = scanner.nextInt();
++    scanner.nextLine();
+ 
+-        Optional<Movie> movieToEdit = movieService.searchMovieById(movieIdToEdit);
+-        if (movieToEdit.isEmpty()) {
+-            System.out.println("Editing movie: " + movieToEdit.get().getTitle());
+-            System.out.println("What would you like to edit?");
+-            System.out.println("1. Title");
+-            System.out.println("2. Release Date");
+-            System.out.println("3. Budget");
+-            System.out.println("4. Description");
+-            System.out.println("5. Actors");
+-            System.out.println("6. Directors");
+-            System.out.println("7. Cancel");
+-            System.out.print("Enter your choice: ");
++    Optional<Movie> movieToEdit = movieService.searchMovieById(movieIdToEdit);
++    if (movieToEdit.isEmpty()) {
++      System.out.println("Editing movie: " + movieToEdit.get().getTitle());
++      System.out.println("What would you like to edit?");
++      System.out.println("1. Title");
++      System.out.println("2. Release Date");
++      System.out.println("3. Budget");
++      System.out.println("4. Description");
++      System.out.println("5. Actors");
++      System.out.println("6. Directors");
++      System.out.println("7. Cancel");
++      System.out.print("Enter your choice: ");
+ 
+-            int choice = safeNextInt();
+-            switch (choice) {
+-                case 1:
+-                    editTitle(movieToEdit.get());
+-                    break;
+-                case 2:
+-                    editReleaseDate(movieToEdit.get());
+-                    break;
+-                case 3:
+-                    editBudget(movieToEdit.get());
+-                    break;
+-                case 4:
+-                    editDescription(movieToEdit.get());
+-                    break;
+-                case 5:
+-                    //actorService.updateActor(movieToEdit.get().getActors());
+-                    break;
+-                case 6:
+-                    //directorService.updateDirector(movieToEdit.get().getActors());
+-                    break;
+-                case 7:
+-                    System.out.println("Cancelling movie edit.");
+-                    break;
+-                default:
+-                    System.out.println("Invalid choice.");
+-                    break;
+-            }
+-        } else {
+-            System.out.println("Movie with ID " + movieIdToEdit + " not found.");
+-        }
+-    }
++      int choice = safeNextInt();
++      switch (choice) {
++        case 1:
++          editTitle(movieToEdit.get());
++          break;
++        case 2:
++          editReleaseDate(movieToEdit.get());
++          break;
++        case 3:
++          editBudget(movieToEdit.get());
++          break;
++        case 4:
++          editDescription(movieToEdit.get());
++          break;
++        case 5:
++          //actorService.updateActor(movieToEdit.get().getActors());
++          break;
++        case 6:
++          //directorService.updateDirector(movieToEdit.get().getActors());
++          break;
++        case 7:
++          System.out.println("Cancelling movie edit.");
++          break;
++        default:
++          System.out.println("Invalid choice.");
++          break;
++      }
++    } else {
++      System.out.println("Movie with ID " + movieIdToEdit + " not found.");
++    }
++  }
+ 
+-    public void editTitle(Movie movie) {
+-        System.out.print("Enter the new title: ");
+-        String newTitle = scanner.nextLine();
+-        movie.setTitle(newTitle);
+-        System.out.println("Title updated successfully!");
+-    }
++  public void editTitle(Movie movie) {
++    System.out.print("Enter the new title: ");
++    String newTitle = scanner.nextLine();
++    movie.setTitle(newTitle);
++    System.out.println("Title updated successfully!");
++  }
+ 
+-    public void editReleaseDate(Movie movie) {
+-        System.out.print("Enter the new release date: ");
+-        int newReleaseDate = scanner.nextInt();
+-        scanner.nextLine();
+-        movie.setReleaseDate(newReleaseDate);
+-        System.out.println("Release date updated successfully!");
+-    }
++  public void editReleaseDate(Movie movie) {
++    System.out.print("Enter the new release date: ");
++    int newReleaseDate = scanner.nextInt();
++    scanner.nextLine();
++    movie.setReleaseDate(newReleaseDate);
++    System.out.println("Release date updated successfully!");
++  }
+ 
+-    public void editBudget(Movie movie) {
+-        System.out.print("Enter the new budget: ");
+-        double newBudget = scanner.nextDouble();
+-        scanner.nextLine();
+-        movie.setBudget(newBudget);
+-        System.out.println("Budget updated successfully!");
+-    }
++  public void editBudget(Movie movie) {
++    System.out.print("Enter the new budget: ");
++    double newBudget = scanner.nextDouble();
++    scanner.nextLine();
++    movie.setBudget(newBudget);
++    System.out.println("Budget updated successfully!");
++  }
+ 
+-    public void editDescription(Movie movie) {
+-        System.out.print("Enter the new description: ");
+-        String newDescription = scanner.nextLine();
+-        movie.setDescription(newDescription);
+-        System.out.println("Description updated successfully!");
+-    }
++  public void editDescription(Movie movie) {
++    System.out.print("Enter the new description: ");
++    String newDescription = scanner.nextLine();
++    movie.setDescription(newDescription);
++    System.out.println("Description updated successfully!");
++  }
+ 
+-    public void deleteMovie() {
+-        List<Movie> movies = movieService.getAllMovies();
+-        if (movies.isEmpty()) {
+-            System.out.println("No movies available for deletion.");
+-            return;
+-        }
++  public void deleteMovie() {
++    List<Movie> movies = movieService.getAllMovies();
++    if (movies.isEmpty()) {
++      System.out.println("No movies available for deletion.");
++      return;
++    }
+ 
+-        System.out.println("Movie List:");
+-        for (Movie movie : movies) {
+-            System.out.println("ID " + movie.getId() + ": " + movie.getTitle());
+-        }
++    System.out.println("Movie List:");
++    for (Movie movie : movies) {
++      System.out.println("ID " + movie.getId() + ": " + movie.getTitle());
++    }
+ 
+-        System.out.print("Enter the ID of the movie you want to delete: ");
+-        int movieIdToDelete = scanner.nextInt();
+-        scanner.nextLine();
++    System.out.print("Enter the ID of the movie you want to delete: ");
++    int movieIdToDelete = scanner.nextInt();
++    scanner.nextLine();
+ 
+-        movieService.removeMovie(
+-                movieService.searchMovieById(movieIdToDelete).get()
+-        );
+-    }
++    movieService.removeMovie(
++      movieService.searchMovieById(movieIdToDelete).get()
++    );
++  }
+ 
+-    private int safeNextInt() {
+-        while (true) {
+-            try {
+-                return scanner.nextInt();
+-            } catch (InputMismatchException e) {
+-                scanner.nextLine();
+-                System.out.println("Invalid input. Please enter a valid number.");
+-            }
+-        }
+-    }
++  private int safeNextInt() {
++    while (true) {
++      try {
++        return scanner.nextInt();
++      } catch (InputMismatchException e) {
++        scanner.nextLine();
++        System.out.println("Invalid input. Please enter a valid number.");
++      }
++    }
++  }
+ 
+-    public void searchMovie() {
+-        System.out.println("Menu - Search");
+-        System.out.println(
+-                "Do you want to search for a Movie Title, Actor, Director or Release Date?"
+-        );
+-        System.out.println("1 - Movie Title");
+-        System.out.println("2 - Actor");
+-        System.out.println("3 - Director");
+-        System.out.println("4 - Release Date");
+-        System.out.print("Enter your choice: ");
+-        int searchChoice = scanner.nextInt();
+-        scanner.nextLine();
++  public void searchMovie() {
++    System.out.println("Menu - Search");
++    System.out.println(
++      "Do you want to search for a Movie Title, Actor, Director or Release Date?"
++    );
++    System.out.println("1 - Movie Title");
++    System.out.println("2 - Actor");
++    System.out.println("3 - Director");
++    System.out.println("4 - Release Date");
++    System.out.print("Enter your choice: ");
++    int searchChoice = scanner.nextInt();
++    scanner.nextLine();
+ 
+-        switch (searchChoice) {
+-            case 1:
+-                searchByTitle();
+-                break;
+-            case 2:
+-                searchByActor();
+-                break;
+-            case 3:
+-                searchByDirector();
+-                break;
+-            case 4:
+-                searchByReleaseDate();
+-                break;
+-            default:
+-                System.out.println("Invalid choice. Returning to main menu...");
+-        }
+-    }
++    switch (searchChoice) {
++      case 1:
++        searchByTitle();
++        break;
++      case 2:
++        searchByActor();
++        break;
++      case 3:
++        searchByDirector();
++        break;
++      case 4:
++        searchByReleaseDate();
++        break;
++      default:
++        System.out.println("Invalid choice. Returning to main menu...");
++    }
++  }
+ 
+-    private void searchByTitle() {
+-        System.out.print("What is the title of the movie you want to search for? ");
+-        String title = scanner.nextLine();
+-        ArrayList<Movie> foundMovies = new ArrayList<>();
+-        for (Movie movie : movieService.getAllMovies()) {
+-            if (movie.getTitle().equalsIgnoreCase(title)) {
+-                foundMovies.add(movie);
+-            }
+-        }
+-        displayMovieTitleSearchResult(foundMovies);
+-    }
++  private void searchByTitle() {
++    System.out.print("What is the title of the movie you want to search for? ");
++    String title = scanner.nextLine();
++    ArrayList<Movie> foundMovies = new ArrayList<>();
++    for (Movie movie : movieService.getAllMovies()) {
++      if (movie.getTitle().equalsIgnoreCase(title)) {
++        foundMovies.add(movie);
++      }
++    }
++    displayMovieTitleSearchResult(foundMovies);
++  }
+ 
+-    private void displayMovieTitleSearchResult(List<Movie> movies) {
+-        if (movies.isEmpty()) {
+-            System.out.println("No movies found.");
+-        } else {
+-            for (Movie movie : movies) {
+-                System.out.println("Movie title: " + movie.getTitle());
+-                System.out.println("Release Date: " + movie.getReleaseDate());
+-                System.out.println(
+-                        "Budget: " + movie.getBudget() + " " + movie.getCurrency()
+-                );
+-                System.out.println("Description: " + movie.getDescription());
+-                System.out.println("List of Actors:");
+-                for (Actor actor : movie.getActors()) {
+-                    System.out.println(actor.getName());
+-                }
+-                System.out.println("List of Directors:");
+-                for (Director director : movie.getDirectors()) {
+-                    System.out.println(director.getName());
+-                }
+-                System.out.println(
+-                        "Do you want to look for another movie? (Yes or No): "
+-                );
+-                String choice = scanner.nextLine();
+-                if (!choice.equalsIgnoreCase("Yes")) {
+-                    System.out.println("Returning to the main menu...");
+-                    break;
+-                }
+-            }
+-        }
+-    }
++  private void displayMovieTitleSearchResult(List<Movie> movies) {
++    if (movies.isEmpty()) {
++      System.out.println("No movies found.");
++    } else {
++      for (Movie movie : movies) {
++        System.out.println("Movie title: " + movie.getTitle());
++        System.out.println("Release Date: " + movie.getReleaseDate());
++        System.out.println(
++          "Budget: " + movie.getBudget() + " " + movie.getCurrency()
++        );
++        System.out.println("Description: " + movie.getDescription());
++        System.out.println("List of Actors:");
++        for (Actor actor : movie.getActors()) {
++          System.out.println(actor.getName());
++        }
++        System.out.println("List of Directors:");
++        for (Director director : movie.getDirectors()) {
++          System.out.println(director.getName());
++        }
++        System.out.println(
++          "Do you want to look for another movie? (Yes or No): "
++        );
++        String choice = scanner.nextLine();
++        if (!choice.equalsIgnoreCase("Yes")) {
++          System.out.println("Returning to the main menu...");
++          break;
++        }
++      }
++    }
++  }
+ 
+-    private void searchByActor() {
+-        System.out.print("Which actor do you want to look for? ");
+-        String actorName = scanner.nextLine();
+-        List<Movie> foundMovies = new ArrayList<>();
+-        for (Movie movie : movieService.getAllMovies()) {
+-            for (Actor actor : movie.getActors()) {
+-                if (actor.getName().equalsIgnoreCase(actorName)) {
+-                    foundMovies.add(movie);
+-                    break;
+-                }
+-            }
+-        }
+-        displayActorSearchResult(foundMovies);
+-    }
++  private void searchByActor() {
++    System.out.print("Which actor do you want to look for? ");
++    String actorName = scanner.nextLine();
++    List<Movie> foundMovies = new ArrayList<>();
++    for (Movie movie : movieService.getAllMovies()) {
++      for (Actor actor : movie.getActors()) {
++        if (actor.getName().equalsIgnoreCase(actorName)) {
++          foundMovies.add(movie);
++          break;
++        }
++      }
++    }
++    displayActorSearchResult(foundMovies);
++  }
+ 
+-    public void searchByDirector() {
+-        System.out.print("Which director do you want to look for? ");
+-        String directorName = scanner.nextLine();
+-        Optional<Director> director = directorService.searchDirector(directorName);
+-        if (director.isEmpty()) {
+-            System.out.println("Director not found.");
+-            return;
+-        }
+-        searchByDirector(movieService.getAllMovies(), director.get());
+-    }
++  public void searchByDirector() {
++    System.out.print("Which director do you want to look for? ");
++    String directorName = scanner.nextLine();
++    Optional<Director> director = directorService.searchDirector(directorName);
++    if (director.isEmpty()) {
++      System.out.println("Director not found.");
++      return;
++    }
++    searchByDirector(movieService.getAllMovies(), director.get());
++  }
+ 
+-    private void searchByDirector(List<Movie> allMovies, Director director) {
+-        List<Movie> foundMovies = new ArrayList<>();
+-        for (Movie movie : allMovies) {
+-            for (Director dir : movie.getDirectors()) {
+-                if (dir.getName().equalsIgnoreCase(director.getName())) {
+-                    foundMovies.add(movie);
+-                    break;
+-                }
+-            }
+-        }
+-        displayDirectorSearchResult(foundMovies);
+-    }
++  private void searchByDirector(List<Movie> allMovies, Director director) {
++    List<Movie> foundMovies = new ArrayList<>();
++    for (Movie movie : allMovies) {
++      for (Director dir : movie.getDirectors()) {
++        if (dir.getName().equalsIgnoreCase(director.getName())) {
++          foundMovies.add(movie);
++          break;
++        }
++      }
++    }
++    displayDirectorSearchResult(foundMovies);
++  }
+ 
+-    private void searchByReleaseDate() {
+-        System.out.print("What release year are you looking for? ");
+-        String releaseDate = scanner.nextLine();
+-        List<Movie> foundMovies = new ArrayList<>();
+-        for (Movie movie : movieService.getAllMovies()) {
+-            if (String.valueOf(movie.getReleaseDate()).equals(releaseDate)) {
+-                foundMovies.add(movie);
+-            }
+-        }
+-        displayReleaseDateSearchResult(foundMovies);
+-    }
++  private void searchByReleaseDate() {
++    System.out.print("What release year are you looking for? ");
++    String releaseDate = scanner.nextLine();
++    List<Movie> foundMovies = new ArrayList<>();
++    for (Movie movie : movieService.getAllMovies()) {
++      if (String.valueOf(movie.getReleaseDate()).equals(releaseDate)) {
++        foundMovies.add(movie);
++      }
++    }
++    displayReleaseDateSearchResult(foundMovies);
++  }
+ 
+-    private void displayActorSearchResult(List<Movie> movies) {
+-        if (movies.isEmpty()) {
+-            System.out.println("No movies found for this actor.");
+-        } else {
+-            for (Movie movie : movies) {
+-                System.out.println(
+-                        "Movie title: " +
+-                                movie.getTitle() +
+-                                "\tRelease Date: " +
+-                                movie.getReleaseDate()
+-                );
+-            }
+-            System.out.println(
+-                    "Do you want to see more details about any movie on the list? (Yes or No): "
+-            );
+-            String choice = scanner.nextLine();
+-            if (choice.equalsIgnoreCase("Yes")) {
+-                System.out.print("Enter the movie ID: ");
+-                int movieId = scanner.nextInt();
+-                scanner.nextLine();
+-                ArrayList<Movie> aux = new ArrayList<>();
+-                aux.add(movieService.searchMovieById(movieId).get());
+-                displayMovieTitleSearchResult(aux);
+-            } else {
+-                System.out.println("Returning to the main menu...");
+-            }
+-        }
+-    }
++  private void displayActorSearchResult(List<Movie> movies) {
++    if (movies.isEmpty()) {
++      System.out.println("No movies found for this actor.");
++    } else {
++      for (Movie movie : movies) {
++        System.out.println(
++          "Movie title: " +
++          movie.getTitle() +
++          "\tRelease Date: " +
++          movie.getReleaseDate()
++        );
++      }
++      System.out.println(
++        "Do you want to see more details about any movie on the list? (Yes or No): "
++      );
++      String choice = scanner.nextLine();
++      if (choice.equalsIgnoreCase("Yes")) {
++        System.out.print("Enter the movie ID: ");
++        int movieId = scanner.nextInt();
++        scanner.nextLine();
++        ArrayList<Movie> aux = new ArrayList<>();
++        aux.add(movieService.searchMovieById(movieId).get());
++        displayMovieTitleSearchResult(aux);
++      } else {
++        System.out.println("Returning to the main menu...");
++      }
++    }
++  }
+ 
+-    private void displayDirectorSearchResult(List<Movie> movies) {
+-        if (movies.isEmpty()) {
+-            System.out.println("No movies found for this director.");
+-        } else {
+-            for (Movie movie : movies) {
+-                System.out.println(
+-                        "Movie title: " +
+-                                movie.getTitle() +
+-                                "\tRelease Date: " +
+-                                movie.getReleaseDate()
+-                );
+-            }
+-            System.out.println(
+-                    "Do you want to see more details about any movie on the list? (Yes or No): "
+-            );
+-            String choice = scanner.nextLine();
+-            if (choice.equalsIgnoreCase("Yes")) {
+-                System.out.print("Enter the movie ID: ");
+-                int movieId = scanner.nextInt();
+-                scanner.nextLine();
+-                Optional<Movie> selectedMovie = movieService.searchMovieById(movieId);
+-                if (selectedMovie.isPresent()) {
+-                    printMovieDetails(selectedMovie.get());
+-                } else {
+-                    System.out.println("Movie with ID " + movieId + " not found.");
+-                }
+-            } else {
+-                System.out.println("Returning to the main menu...");
+-            }
+-        }
+-    }
++  private void displayDirectorSearchResult(List<Movie> movies) {
++    if (movies.isEmpty()) {
++      System.out.println("No movies found for this director.");
++    } else {
++      for (Movie movie : movies) {
++        System.out.println(
++          "Movie title: " +
++          movie.getTitle() +
++          "\tRelease Date: " +
++          movie.getReleaseDate()
++        );
++      }
++      System.out.println(
++        "Do you want to see more details about any movie on the list? (Yes or No): "
++      );
++      String choice = scanner.nextLine();
++      if (choice.equalsIgnoreCase("Yes")) {
++        System.out.print("Enter the movie ID: ");
++        int movieId = scanner.nextInt();
++        scanner.nextLine();
++        Optional<Movie> selectedMovie = movieService.searchMovieById(movieId);
++        if (selectedMovie.isPresent()) {
++          printMovieDetails(selectedMovie.get());
++        } else {
++          System.out.println("Movie with ID " + movieId + " not found.");
++        }
++      } else {
++        System.out.println("Returning to the main menu...");
++      }
++    }
++  }
+ 
+-    private void displayReleaseDateSearchResult(List<Movie> movies) {
+-        if (movies.isEmpty()) {
+-            System.out.println("No movies found for this release year.");
+-        } else {
+-            for (Movie movie : movies) {
+-                System.out.println("Movie title: " + movie.getTitle());
+-            }
+-            System.out.println(
+-                    "Do you want to see more details about any movie on the list? (Yes or No): "
+-            );
+-            String choice = scanner.nextLine();
+-            if (choice.equalsIgnoreCase("Yes")) {
+-                System.out.print("Enter the movie ID: ");
+-                int movieId = scanner.nextInt();
+-                scanner.nextLine();
+-                ArrayList<Movie> aux = new ArrayList<>();
+-                aux.add(movieService.searchMovieById(movieId).get());
+-                displayMovieTitleSearchResult(aux);
+-            } else {
+-                System.out.println("Returning to the main menu...");
+-            }
+-        }
+-    }
++  private void displayReleaseDateSearchResult(List<Movie> movies) {
++    if (movies.isEmpty()) {
++      System.out.println("No movies found for this release year.");
++    } else {
++      for (Movie movie : movies) {
++        System.out.println("Movie title: " + movie.getTitle());
++      }
++      System.out.println(
++        "Do you want to see more details about any movie on the list? (Yes or No): "
++      );
++      String choice = scanner.nextLine();
++      if (choice.equalsIgnoreCase("Yes")) {
++        System.out.print("Enter the movie ID: ");
++        int movieId = scanner.nextInt();
++        scanner.nextLine();
++        ArrayList<Movie> aux = new ArrayList<>();
++        aux.add(movieService.searchMovieById(movieId).get());
++        displayMovieTitleSearchResult(aux);
++      } else {
++        System.out.println("Returning to the main menu...");
++      }
++    }
++  }
+ }
+Index: src/main/java/com/imdb/model/Actor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.imdb.model;\r\n\r\npublic class Actor extends Person {\r\n\r\n  public Actor(String name, String nationality) {\r\n    super(name, nationality);\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/imdb/model/Actor.java b/src/main/java/com/imdb/model/Actor.java
+--- a/src/main/java/com/imdb/model/Actor.java	
++++ b/src/main/java/com/imdb/model/Actor.java	
+@@ -1,5 +1,7 @@
+ package com.imdb.model;
+ 
++import java.io.Serializable;
++
+ public class Actor extends Person {
+ 
+   public Actor(String name, String nationality) {
+Index: src/main/java/com/imdb/model/Director.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.imdb.model;\r\n\r\npublic class Director extends Person {\r\n\r\n  public Director(String name, String nationality) {\r\n    super(name, nationality);\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/imdb/model/Director.java b/src/main/java/com/imdb/model/Director.java
+--- a/src/main/java/com/imdb/model/Director.java	
++++ b/src/main/java/com/imdb/model/Director.java	
+@@ -1,5 +1,7 @@
+ package com.imdb.model;
+ 
++import java.io.Serializable;
++
+ public class Director extends Person {
+ 
+   public Director(String name, String nationality) {
+Index: src/main/java/com/imdb/model/Person.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.imdb.model;\r\n\r\npublic abstract class Person {\r\n\r\n  private int id;\r\n  private String name;\r\n  private String nationality;\r\n\r\n  public Person(String name, String nationality) {\r\n    this.name = name;\r\n    this.nationality = nationality;\r\n  }\r\n\r\n  public int getId() {\r\n    return id;\r\n  }\r\n\r\n  public void setId(int id) {\r\n    this.id = id;\r\n  }\r\n\r\n  public String getName() {\r\n    return name;\r\n  }\r\n\r\n  public void setName(String name) {\r\n    this.name = name;\r\n  }\r\n\r\n  public String getNationality() {\r\n    return nationality;\r\n  }\r\n\r\n  public void setNationality(String nationality) {\r\n    this.nationality = nationality;\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/imdb/model/Person.java b/src/main/java/com/imdb/model/Person.java
+--- a/src/main/java/com/imdb/model/Person.java	
++++ b/src/main/java/com/imdb/model/Person.java	
+@@ -1,5 +1,10 @@
+ package com.imdb.model;
+ 
++import java.io.IOException;
++import java.io.ObjectInputStream;
++import java.io.ObjectOutputStream;
++import java.io.Serializable;
++
+ public abstract class Person {
+ 
+   private int id;
+Index: src/main/java/com/imdb/model/Movie.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.imdb.model;\r\n\r\nimport java.util.List;\r\n\r\npublic class Movie {\r\n\r\n  private int id;\r\n  private String title;\r\n  private int releaseDate;\r\n  private double budget;\r\n  private String currency;\r\n  private String description;\r\n  private final List<Director> directors;\r\n  private final List<Actor> actors;\r\n\r\n  public Movie(\r\n    String title,\r\n    int releaseDate,\r\n    double budget,\r\n    String currency,\r\n    String description,\r\n    List<Actor> actors,\r\n    List<Director> directors\r\n  ) {\r\n    this.title = title;\r\n    this.releaseDate = releaseDate;\r\n    this.budget = budget;\r\n    this.currency = currency;\r\n    this.description = description;\r\n    this.actors = actors;\r\n    this.directors = directors;\r\n  }\r\n\r\n  public int getId() {\r\n    return id;\r\n  }\r\n\r\n  public void setId(int id) {\r\n    this.id = id;\r\n  }\r\n\r\n  public String getTitle() {\r\n    return title;\r\n  }\r\n\r\n  public void setTitle(String title) {\r\n    this.title = title;\r\n  }\r\n\r\n  public int getReleaseDate() {\r\n    return releaseDate;\r\n  }\r\n\r\n  public void setReleaseDate(int releaseDate) {\r\n    this.releaseDate = releaseDate;\r\n  }\r\n\r\n  public double getBudget() {\r\n    return budget;\r\n  }\r\n\r\n  public void setBudget(double budget) {\r\n    this.budget = budget;\r\n  }\r\n\r\n  public String getCurrency() {\r\n    return currency;\r\n  }\r\n\r\n  public void setCurrency(String currency) {\r\n    this.currency = currency;\r\n  }\r\n\r\n  public String getDescription() {\r\n    return description;\r\n  }\r\n\r\n  public void setDescription(String description) {\r\n    this.description = description;\r\n  }\r\n\r\n  public List<Actor> getActors() {\r\n    return actors;\r\n  }\r\n\r\n  public List<Director> getDirectors() {\r\n    return directors;\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/imdb/model/Movie.java b/src/main/java/com/imdb/model/Movie.java
+--- a/src/main/java/com/imdb/model/Movie.java	
++++ b/src/main/java/com/imdb/model/Movie.java	
+@@ -1,5 +1,7 @@
+ package com.imdb.model;
+ 
++import java.io.*;
++import java.util.ArrayList;
+ import java.util.List;
+ 
+ public class Movie {
