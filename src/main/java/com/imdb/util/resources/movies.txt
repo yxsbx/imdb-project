@@ -1,102 +1,96 @@
-Id: 1
-Title: "Echoes of the Past"
-Release Date: 2021
-Budget: 120000.0
-Currency: USD
-Actors: 
-Id: 1, Name: Marco Silva, Nationality: Brazilian
-Id: 2, Name: Elena Rodriguez, Nationality: Spanish
-Directors: 
-Id: 2, Name: Sofia Rivera, Nationality: Mexican
+Id:1
+Title:The Matrix
+Release Date:1999
+Budget:6.3E7
+Currency:USD
+Description:A cyberpunk action film
+Actors:
+    Id:1,Name:Keanu Reeves,Nationality:Canadian,BirthDate:1964-09-02
+    Id:2,Name:Carrie-Anne Moss,Nationality:Canadian,BirthDate:1967-08-21
+Directors:
+    Id:1,Name:The Wachowskis,Nationality:American,BirthDate:1947-09-14
 
-Id: 2
-Title: "Lost in the Horizon"
-Release Date: 2023
-Budget: 5000000.0
-Currency: USD
-Actors: 
-Id: 3, Name: Aarav Patel, Nationality: Indian
-Id: 4, Name: Li Wei, Nationality: Chinese
-Directors: 
-Id: 3, Name: Alex Johnson, Nationality: Canadian
+Id:2
+Title:Jurassic Park
+Release Date:1993
+Budget:6.3E7
+Currency:USD
+Description:Dinosaurs in a theme park
+Actors:
+    Id:3,Name:Sam Neill,Nationality:New Zealand,BirthDate:1947-09-14
+    Id:4,Name:Laura Dern,Nationality:American,BirthDate:1967-02-10
+Directors:
+    Id:2,Name:Steven Spielberg,Nationality:American,BirthDate:1946-12-18
 
-Id: 3
-Title: "The Whispering Shadows"
-Release Date: 2022
-Budget: 8000000.0
-Currency: USD
-Actors: 
-Id: 5, Name: Natasha Ivanova, Nationality: Russian
-Id: 6, Name: David Smith, Nationality: British
-Directors: 
-Id: 4, Name: Emilia Clarke, Nationality: Irish
+Id:3
+Title:Avatar
+Release Date:2009
+Budget:2.37E8
+Currency:USD
+Description:Journey to Pandora
+Actors:
+    Id:5,Name:Sam Worthington,Nationality:Australian,BirthDate:1976-08-02
+    Id:6,Name:Zoe Saldana,Nationality:American,BirthDate:1978-06-19
+Directors:
+    Id:3,Name:James Cameron,Nationality:Canadian,BirthDate:1954-08-16
 
-Id: 4
-Title: "Beneath the Emerald Seas"
-Release Date: 2024
-Budget: 1000000.0
-Currency: USD
-Actors: 
-Id: 7, Name: Clara Müller, Nationality: German
-Id: 8, Name: Yuto Nakamura, Nationality: Japanese
-Directors: 
-Id: 5, Name: Carlos Santos, Nationality: Portuguese
+Id:4
+Title:Titanic
+Release Date:1997
+Budget:2.0E8
+Currency:USD
+Description:Love story on a sinking ship
+Actors:
+    Id:7,Name:Leonardo DiCaprio,Nationality:American,BirthDate:1974-11-11
+    Id:8,Name:Kate Winslet,Nationality:British,BirthDate:1975-10-05
+Directors:
+    Id:3,Name:James Cameron,Nationality:Canadian,BirthDate:1954-08-16
 
-Id: 5
-Title: "The Last Symphony"
-Release Date: 2025
-Budget: 1000000.0
-Currency: USD
-Actors: 
-Id: 9, Name: Olivia Martin, Nationality: French
-Id: 10, Name: James O'Neil, Nationality: Irish
-Directors: 
-Id: 6, Name: Mohammed Al Fayed, Nationality: Egyptian
+Id:5
+Title:Star Wars
+Release Date:1977
+Budget:1.1E7
+Currency:USD
+Description:Epic space opera
+Actors:
+    Id:9,Name:Mark Hamill,Nationality:American,BirthDate:1951-09-25
+    Id:10,Name:Harrison Ford,Nationality:American,BirthDate:1942-07-13
+Directors:
+    Id:4,Name:George Lucas,Nationality:American,BirthDate:1944-05-14
 
-Id: 6
-Title: Yasmin
-Release Date: 2020
-Budget: 49384.0
-Currency: Yasmin
-Actors: 
-Id: 1, Name: Yasmin, Nationality: Yasmin
-Id: 2, Name: Yasmin, Nationality: Yasmin
-Id: 3, Name: Yasmin, Nationality: Yasmin
-Directors: 
-Id: 8, Name: Mohammed Al Fayed, Nationality: Egyptian
+Id:6
+Title:The Dark Knight Rises
+Release Date:2012
+Budget:2.5E8
+Currency:USD
+Description:Batman faces Bane
+Actors:
+    Id:11,Name:Christian Bale,Nationality:British,BirthDate:1974-01-30
+    Id:12,Name:Tom Hardy,Nationality:British,BirthDate:1977-09-15
+Directors:
+    Id:5,Name:Christopher Nolan,Nationality:British,BirthDate:1970-07-30
 
-Id: 7
-Title: Daniel
-Release Date: 7888
-Budget: 6677.0
-Currency: daniel
-Actors: 
-Id: 1, Name: daniel, Nationality: daniel
-Id: 2, Name: daniel, Nationality: daniel
-Directors: 
-Id: 1, Name: maria, Nationality: maria
-Id: 2, Name: maria, Nationality: maria
+Id:7
+Title:Inglourious Basterds
+Release Date:2009
+Budget:7.0E7
+Currency:USD
+Description:Quentin Tarantino's WWII film
+Actors:
+    Id:13,Name:Brad Pitt,Nationality:American,BirthDate:1963-12-18
+    Id:14,Name:Christoph Waltz,Nationality:German,BirthDate:1956-10-04
+Directors:
+    Id:6,Name:Quentin Tarantino,Nationality:American,BirthDate:1963-03-27
 
-Id: 8
-Title: YAS
-Release Date: 3883
-Budget: 7777.0
-Currency: SDDD
-Actors: 
-Id: 1, Name: JSDJDSF, Nationality: DFADFAS
-Id: 2, Name: SDFAS, Nationality: SDFA
-Directors: 
-Id: 1, Name: SDAFADS, Nationality: DSAF
-Id: 2, Name: SDAFDSF, Nationality: SADFSDF
-
-Id: 9
-Title: Yasmin
-Release Date: 7667
-Budget: 55555.0
-Currency: yas
-Actors: 
-Id: 3, Name: kjndkfjndfdsgkn, Nationality: dfkjhjkfdjkfdfkdjs
-Id: 4, Name: dfklkfdkjmfdskfd, Nationality: jdkfhsjkdsfjkdfsjksdf
-Directors: 
-Id: 3, Name: kjdfjks, Nationality: dfjahjsd
+Id:8
+Title:The Shawshank Redemption
+Release Date:1994
+Budget:2.5E7
+Currency:USD
+Description:A tale of hope and friendship in prison
+Actors:
+    Id:15,Name:Tim Robbins,Nationality:American,BirthDate:1958-10-16
+    Id:16,Name:Morgan Freeman,Nationality:American,BirthDate:1937-06-01
+Directors:
+    Id:7,Name:Frank Darabont,Nationality:American,BirthDate:1959-01-28
 

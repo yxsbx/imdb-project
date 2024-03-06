@@ -2,60 +2,52 @@ package com.imdb.controller;
 
 import com.imdb.DTO.DirectorDTO;
 import com.imdb.repository.IDirectorRepository;
-import com.imdb.util.view.message.Colors;
 import com.imdb.util.view.message.DirectorMessage;
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
- * Handles director-related actions including creating, updating, deleting,
- * and searching for directors within the application.
+ * Responsible for handling director-related operations such as
+ * creating, updating, deleting, and searching for directors. It interfaces with
+ * the director repository for persistence and utilizes a scanner for user input.
  */
 
 public final class DirectorController {
+
     private final IDirectorRepository directorRepository;
     private final Scanner scanner;
 
     /**
-     * Constructs a DirectorController with a specified director repository and scanner for input.
+     * Initializes the DirectorController with a director repository and a scanner for input.
      *
-     * @param directorRepository An implementation of the director repository interface for data access.
-     * @param scanner A Scanner instance to read user input from the console.
+     * @param directorRepository Implementation of IDirectorRepository for director data access.
+     * @param scanner            Scanner instance for reading console input.
      */
 
-    public DirectorController(IDirectorRepository directorRepository, Scanner scanner) {
+    public DirectorController(
+            IDirectorRepository directorRepository,
+            Scanner scanner
+    ) {
         this.directorRepository = directorRepository;
         this.scanner = scanner;
     }
 
     /**
-     * Displays a list of all directors currently registered in the repository.
+     * Registers a specified number of new directors based on user input.
+     *
+     * @return A list of DirectorDTO objects representing the newly registered directors.
      */
 
-    public void showListOfDirectors() {
-        List<DirectorDTO> directors = directorRepository.getAll();
-        if (directors.isEmpty()) {
-            System.out.println(DirectorMessage.LIST_NOT_FOUND.get());
-            return;
-        }
-        System.out.println(formatDirectors(directors));
-    }
-
-    /**
-     * Prompts the user to input details for registering one or more new directors.
-     * Registers each new director in the repository.
-     */
-
-    public List<DirectorDTO> registerDirector() {
-        System.out.println("How many directors would you like to register?");
+    public List<DirectorDTO> createDirector() {
+        System.out.print(DirectorMessage.HOW_MANY_DIRECTORS.get());
         int qntDirectors = scanner.nextInt();
         scanner.nextLine();
         List<DirectorDTO> directors = new ArrayList<>(10);
 
         for (int i = 1; i <= qntDirectors; i++) {
-            System.out.println("Enter the name of director number " + i + " : ");
             DirectorDTO newDirectorDTO = inputDirector();
             directors.add(directorRepository.create(newDirectorDTO));
             System.out.println(DirectorMessage.REGISTERED.get());
@@ -64,69 +56,109 @@ public final class DirectorController {
     }
 
     /**
-     * Updates the information of an existing director identified by ID.
+     * Displays a list of all registered directors to the user.
      */
 
-    public void updateDirector() {
-        System.out.print("Enter the ID of the director to update: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        DirectorDTO directorDTOId = new DirectorDTO(id, null, null);
-        DirectorDTO directorToUpdate = directorRepository.readById(directorDTOId);
+    public void readListOfDirectors() {
+        List<DirectorDTO> directors = directorRepository.read();
+        String formattedDirectors = DirectorDTO.formatDirectors(directors);
+        System.out.println(formattedDirectors);
+        System.out.println(
+                "Would you like to see details of an Director? (yes/no)"
+        );
 
-        DirectorDTO updatedDirectorDTO = inputDirector();
-        directorRepository.update(directorToUpdate, updatedDirectorDTO);
-        System.out.println(DirectorMessage.UPDATED.get());
+        if (scanner.nextLine().trim().equalsIgnoreCase("yes")) {
+            System.out.println("Enter actor ID:");
+            String id = scanner.nextLine();
+
+            Optional<DirectorDTO> directorToSee = directors
+                    .stream()
+                    .filter(director -> director.id() == Integer.parseInt(id))
+                    .findFirst();
+
+            if (directorToSee.isPresent()) {
+                DirectorDTO directorDetails = directorToSee.get();
+                System.out.println(DirectorDTO.actorDetailed(directorDetails));
+            } else {
+                System.out.println("Actor Id: " + id + " is not on the list");
+            }
+        }
     }
 
     /**
-     * Deletes a director from the repository based on the provided ID.
+     * Updates the information of an existing director based on their ID.
      */
 
-    public void deleteDirector() {
-        System.out.print("Enter the ID of the director to delete: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        DirectorDTO directorDTO = new DirectorDTO(id, null, null);
+    public void updateDirector(List<DirectorDTO> directors) {
+        System.out.println("Current directors in the movie:");
+        directors.forEach(director ->
+                System.out.println(director.id() + " - " + director.name())
+        );
 
-        DirectorDTO directorToDelete = directorRepository.readById(directorDTO);
-        directorRepository.delete(directorToDelete);
-        System.out.println(DirectorMessage.DELETED.get());
+        System.out.println("Do you want to add or remove directors? (add/remove)");
+        String action = scanner.nextLine().trim();
+
+        switch (action) {
+            case "add":
+                List<DirectorDTO> addedDirectors = createDirector();
+                directors.addAll(addedDirectors);
+                break;
+            case "remove":
+                deleteDirector(directors);
+                break;
+        }
     }
 
     /**
-     * Searches for directors based on a given name keyword.
+     * Deletes a director from the system based on their ID.
+     */
+
+    public void deleteDirector(List<DirectorDTO> directors) {
+        System.out.println("Enter director IDs to remove:");
+        String[] idsToRemove = scanner.nextLine().split(",");
+        for (String idStr : idsToRemove) {
+            int idToRemove = Integer.parseInt(idStr.trim());
+            directors.removeIf(director -> director.id() == idToRemove);
+        }
+    }
+
+    /**
+     * Searches for and displays directors whose names match a given keyword.
      */
 
     public void searchDirectors() {
-        System.out.println("Enter the name keyword to search for a director:");
-        String keyword = scanner.next();
-        DirectorDTO directorName = new DirectorDTO(0, keyword, null);
-        directorRepository.readByName(directorName).forEach(System.out::println);
+        System.out.print(DirectorMessage.ENTER_SEARCH_KEYWORD_DIRECTOR.get());
+        String keyword = scanner.nextLine();
+        DirectorDTO directorName = new DirectorDTO(
+                0,
+                keyword,
+                null,
+                null,
+                List.of()
+        );
+        List<DirectorDTO> directorDTOList = directorRepository.search(directorName);
+        if (directorDTOList.isEmpty()) {
+            System.out.println(DirectorMessage.DIRECTOR_FOUND_NAME);
+        } else {
+            directorDTOList.forEach(directorDTO ->
+                    System.out.println(DirectorDTO.actorDetailed(directorDTO))
+            );
+        }
     }
 
     /**
-     * Utility method to create a new DirectorDTO based on user input.
+     * Collects user input for a new director, including their name and nationality, and creates a new DirectorDTO object.
      *
-     * @return A new instance of DirectorDTO with input details.
+     * @return A new DirectorDTO object based on user input.
      */
 
     public DirectorDTO inputDirector() {
-        System.out.print("Enter the name of the director: ");
+        System.out.print(DirectorMessage.ENTER_DIRECTOR_NAME.get());
         String name = scanner.nextLine();
-        System.out.print("Enter the nationality of the director: ");
+        System.out.print(DirectorMessage.ENTER_DIRECTOR_NATIONALITY.get());
         String nationality = scanner.nextLine();
-        return new DirectorDTO(0, name, nationality);
-    }
-
-    private String formatDirectors(List<DirectorDTO> directors) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(Colors.YELLOW).append("List of directors\n").append(Colors.RESET);
-        int index = 1;
-        for (DirectorDTO director : directors) {
-            stringBuilder.append(Colors.YELLOW).append(index).append(" - ").append(Colors.RESET).append(director).append("\n");
-            index++;
-        }
-        return stringBuilder.toString();
+        System.out.print(DirectorMessage.ENTER_DIRECTOR_BIRTHDATE.get());
+        LocalDate birthdate = LocalDate.parse(scanner.nextLine());
+        return new DirectorDTO(0, name, nationality, birthdate, List.of());
     }
 }

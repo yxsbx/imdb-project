@@ -4,7 +4,53 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bc35b6bf-4d33-46a1-871d-337593c5f7d6" name="Changes" comment="Updates for create, update, delete, search&#10;Remaining exceptions and completing all functions" />
+    <list default="true" id="bc35b6bf-4d33-46a1-871d-337593c5f7d6" name="Changes" comment="Updates for create, update, delete, search&#10;Remaining exceptions and completing all functions">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/fileHandler/MovieReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/fileHandler/MovieWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_02_2024_14_59_[Changes]1/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_02_2024_14_59__Changes_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_02_2024_15_00_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_02_2024_15_00__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19_02_2024_14_08_[Changes]1/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19_02_2024_14_08__Changes_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19_02_2024_15_01_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_19_02_2024_15_01__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_02_2024_14_16_[Changes]1/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_20_02_2024_14_16__Changes_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_21_02_2024_14_47_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_21_02_2024_14_47__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/DTO/ActorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/DTO/ActorDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/DTO/DirectorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/DTO/DirectorDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/DTO/MovieDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/DTO/MovieDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/IMDBApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/IMDBApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/controller/ActorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/controller/ActorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/controller/DirectorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/controller/DirectorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/controller/MovieController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/controller/MovieController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/model/Actor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/model/Actor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/model/Director.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/model/Director.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/model/Movie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/model/Movie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/repository/CRUDRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/repository/CRUDRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/repository/IActorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/repository/IActorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/repository/IDirectorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/repository/IDirectorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/repository/IMovieRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/repository/IMovieRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/repository/impl/ActorRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/repository/impl/ActorRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/repository/impl/DirectorRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/repository/impl/DirectorRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/repository/impl/MovieRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/repository/impl/MovieRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/FileHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/exceptions/ActorException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/exceptions/ActorException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/exceptions/DirectorException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/exceptions/DirectorException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/exceptions/MovieException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/exceptions/MovieException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/resources/actors.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/resources/directors.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/resources/movies.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/resources/movies.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/Menu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/ActorMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/ActorMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/Colors.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/Colors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/DirectorMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/DirectorMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/MenuMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/MenuMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/MovieMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/imdb/util/view/message/MovieMessage.java" afterDir="false" />
+    </list>
     <list id="702d8795-bb53-485d-b6ad-b6bf142d8d08" name="Changes by fer" comment="" />
     <list id="3bf4d072-ce09-48a6-abe3-ccaa20287196" name="Changes by paulohenrique" comment="" />
     <list id="0da856c3-0dfa-40b0-8596-d53bef4b56d7" name="Changes by sousx" comment="Changes by sousx" />
@@ -67,7 +113,7 @@
     "git-widget-placeholder": "develop",
     "jdk.selected.JAVA_MODULE": "openjdk-21",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/ybarc/git/imdb-project",
+    "last_opened_file_path": "C:/Users/ybarc/git/imdb-project/src/main/java/com/imdb",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -76,6 +122,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ybarc\git\imdb-project\src\main\java\com\imdb" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -103,6 +154,9 @@
       <workItem from="1708633167923" duration="23069000" />
       <workItem from="1708700292980" duration="1888000" />
       <workItem from="1708790700458" duration="98000" />
+      <workItem from="1708790809957" duration="2427000" />
+      <workItem from="1708993254687" duration="70000" />
+      <workItem from="1709748777020" duration="2227000" />
     </task>
     <task id="LOCAL-00001" summary="menu; ActorController;">
       <option name="closed" value="true" />
@@ -144,7 +198,15 @@
       <option name="project" value="LOCAL" />
       <updated>1708790733658</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Updates for create, update, delete, search&#10;Remaining exceptions and completing all functions">
+      <option name="closed" value="true" />
+      <created>1708790842548</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1708790842548</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

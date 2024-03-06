@@ -10,7 +10,6 @@ import java.util.List;
  */
 
 public interface CRUDRepository<T> {
-
     /**
      * Creates a new entity in the repository.
      *
@@ -21,14 +20,21 @@ public interface CRUDRepository<T> {
     T create(T entry);
 
     /**
+     * Retrieves all entities from the repository.
+     *
+     * @return a list of all entities
+     */
+
+    List<T> read();
+
+    /**
      * Updates an existing entity in the repository.
      *
      * @param entry  the entity to be updated
      * @param entry2 the entity containing the new values
-     * @return the updated entity
      */
 
-    T update(T entry, T entry2);
+    void update(T entry, T entry2);
 
     /**
      * Deletes an entity from the repository.
@@ -39,12 +45,14 @@ public interface CRUDRepository<T> {
     void delete(T entry);
 
     /**
-     * Retrieves all entities from the repository.
+     * Searches for entities based on a name or partial name.
+     * The exact search criteria are implementation-specific.
      *
-     * @return a list of all entities
+     * @param entry an example entity containing the search criteria
+     * @return a list of entities matching the search criteria
      */
 
-    List<T> getAll();
+    List<T> search(T entry);
 
     /**
      * Reads an entity by its identifier.
@@ -54,15 +62,4 @@ public interface CRUDRepository<T> {
      */
 
     T readById(T entry);
-
-    /**
-     * Searches for entities based on a name or partial name.
-     * The exact search criteria are implementation-specific.
-     *
-     * @param entry an example entity containing the search criteria
-     * @return a list of entities matching the search criteria
-     */
-
-    List<T> readByName(T entry);
-
 }
