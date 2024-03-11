@@ -18,7 +18,7 @@ This system is designed to offer a movie catalog similar to IMDB, allowing users
 
 Este sistema foi projetado para oferecer um catálogo de filmes semelhante ao IMDB, permitindo aos usuários gerenciar e explorar uma coleção de filmes, seu elenco e diretores. Ele utiliza conceitos de Programação Orientada a Objetos, como encapsulamento, herança, polimorfismo e classes abstratas para estruturar o aplicativo de maneira eficaz.
 
-##Características PT-BR
+## Características PT-BR
 
 - **Registro de filmes:** os usuários podem adicionar filmes ao catálogo, especificando atributos como nome, data de lançamento, orçamento e descrição.
 - **Registro de Atores:** Os atores podem ser adicionados ao sistema com atributos detalhados.
